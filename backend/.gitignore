@@ -1,0 +1,10 @@
+**/__pycache__
+*.pyc
+venv
+env
+.env
+django_debug.log
+.pytest_cache
+staticfiles
+doc/build
+.coverage
