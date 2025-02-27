@@ -67,18 +67,6 @@ jobs:
           pip install pytest python-dotenv mysqlclient
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run migrations
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DB_NAME: test_db
-          DB_USER: test_user
-          DB_PASSWORD: test_password
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-        working-directory: backend
-        run: |
-          python manage.py migrate
-
       - name: Run tests with pytest
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
