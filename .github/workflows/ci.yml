@@ -75,12 +75,14 @@ jobs:
           DB_PASSWORD: test_password
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+        working-directory: backend
         run: |
           python manage.py migrate
 
       - name: Run tests with pytest
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        working-directory: backend
         run: |
           pytest --cov=./ --cov-report term --cov-fail-under=10
 
