@@ -11,4 +11,3 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/auth/', obtain_auth_token),
 ]
-
