@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -16,9 +16,11 @@ class UserViewSet(viewsets.ModelViewSet):
         """Permet de créer un utilisateur via l'API"""
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            return Response({"message": "Utilisateur créé avec succès"}, status=201)
-        return Response(serializer.errors, status=400)
+            serializer.save()
+            return Response(
+                {"message": "Utilisateur créé avec succès"},
+                status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LegoSetViewSet(viewsets.ModelViewSet):
@@ -38,12 +40,18 @@ class LegoSetViewSet(viewsets.ModelViewSet):
         """Empêche un utilisateur de modifier un set qui ne lui appartient pas."""
         instance = self.get_object()
         if instance.user != request.user:
-            return Response({"error": "Modification non autorisée"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "Modification non autorisée"},
+                status=status.HTTP_403_FORBIDDEN
+            )
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         """Empêche un utilisateur de supprimer un set qui ne lui appartient pas."""
         instance = self.get_object()
         if instance.user != request.user:
-            return Response({"error": "Suppression non autorisée"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "Suppression non autorisée"},
+                status=status.HTTP_403_FORBIDDEN
+            )
         return super().destroy(request, *args, **kwargs)

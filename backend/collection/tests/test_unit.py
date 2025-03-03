@@ -3,14 +3,19 @@ from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from collection.models import LegoSet
 
+
 @pytest.mark.django_db
 class TestLegoSetViewSet:
 
     def setup_method(self):
         """Configuration avant chaque test"""
         self.client = APIClient()
-        self.user = User.objects.create_user(username="testuser", password="testpass")
-        self.lego_set = LegoSet.objects.create(name="Millennium Falcon", user=self.user, lego_id=75192)
+        self.user = User.objects.create_user(
+            username="testuser", password="testpass"
+            )
+        self.lego_set = LegoSet.objects.create(
+            name="Millennium Falcon", user=self.user, lego_id=75192
+            )
 
     def test_list_unauthorized(self):
         """Test : un utilisateur non authentifié ne peut pas accéder aux LEGO sets"""

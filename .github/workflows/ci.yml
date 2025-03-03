@@ -72,7 +72,7 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
         working-directory: backend
         run: |
-          pytest --cov=./ --cov-report term --cov-fail-under=0
+          pytest --cov=./ --cov-report term --cov-fail-under=2
 
   containerize:
     needs: [build, test]
