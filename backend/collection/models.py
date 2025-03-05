@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from .rebrickable_api import get_lego_set_price
 
+
 class LegoSet(models.Model):
     name = models.CharField(max_length=255)
     lego_id = models.CharField(max_length=50, unique=True)

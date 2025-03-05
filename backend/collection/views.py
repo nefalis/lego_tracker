@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import LegoSet
+from django.db.models import Sum
 from .serializers import LegoSetSerializer, UserSerializer
 from .rebrickable_api import get_lego_set_price
 
@@ -33,7 +34,7 @@ class LegoSetViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Affiche uniquement les sets appartenant à l'utilisateur connecté."""
         return LegoSet.objects.filter(user=self.request.user)
-    
+
     def get_object(self):
         """Récupère l'objet et renvoie une erreur 403 si l'utilisateur n'est pas propriétaire."""
         try:
@@ -70,7 +71,7 @@ class LegoSetViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )
         return super().destroy(request, *args, **kwargs)
-    
+
         @action(detail=False, methods=["get"])
         def total_value(self, request):
             """Retourne la valeur totale de la collection LEGO de l'utilisateur."""
@@ -81,5 +82,12 @@ class LegoSetViewSet(viewsets.ModelViewSet):
         def update_price(self, request, pk=None):
             """Met à jour le prix d'un set spécifique."""
             lego_set = self.get_object()
-            lego_set.update_price()
+            price_data = get_lego_set_price(lego_set.lego_id)
+
+            if "error" in price_data:
+                return Response({"error": "Impossible de récupérer le prix."}, status=400)
+
+            lego_set.price = price_data.get("price", 0)
+            lego_set.save()
+
             return Response({"message": f"Prix mis à jour: {lego_set.price} €"})

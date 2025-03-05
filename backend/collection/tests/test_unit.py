@@ -12,8 +12,10 @@ class TestLegoSetViewSet:
         self.client = APIClient()
         self.user = User.objects.create_user(username="testuser", password="testpass")
         self.other_user = User.objects.create_user(username="otheruser", password="testpass")
-        
-        self.lego_set = LegoSet.objects.create(name="Millennium Falcon", user=self.user, lego_id=75192)
+
+        self.lego_set = LegoSet.objects.create(
+            name="Millennium Falcon", user=self.user, lego_id=75192
+            )
 
     def test_list_unauthorized(self):
         """Test : un utilisateur non authentifié ne peut pas accéder aux LEGO sets"""
