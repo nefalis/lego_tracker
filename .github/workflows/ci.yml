@@ -37,22 +37,6 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     needs: build
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_DATABASE: test_db
-          MYSQL_USER: test_user
-          MYSQL_PASSWORD: test_password
-          MYSQL_ROOT_PASSWORD: rootpass
-        ports:
-          - "3306:3306"
-        options: >-
-          --health-cmd="mysqladmin ping --host=localhost --user=root --password=rootpass"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       - uses: actions/checkout@v4
 
@@ -73,19 +57,13 @@ jobs:
       - name: Run tests with pytest
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DATABASE_NAME: test_db
-          DATABASE_USER: test_user
-          DATABASE_PASSWORD: test_password
-          DATABASE_HOST: 127.0.0.1
-          DATABASE_PORT: 3306
-          DJANGO_SETTINGS_MODULE: backend.backend.settings
         run: |
-          pytest --ds=backend.backend.settings --cov=./ --cov-report term --cov-fail-under=10
+          pytest --cov=./ --cov-report term --cov-fail-under=10
 
   containerize:
     needs: [build, test]
     runs-on: ubuntu-22.04
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' && success()
     steps:
       - uses: actions/checkout@v4
 
