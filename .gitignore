@@ -8,3 +8,4 @@ django_debug.log
 staticfiles
 doc/build
 .coverage
+.coveragerc

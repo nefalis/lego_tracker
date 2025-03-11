@@ -8,6 +8,7 @@ class LegoSet(models.Model):
     lego_id = models.CharField(max_length=50, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    quantity = models.PositiveIntegerField(default=1)  # Ajout de la quantité
 
     def update_price(self):
         """Met à jour le prix du set via Rebrickable API."""
